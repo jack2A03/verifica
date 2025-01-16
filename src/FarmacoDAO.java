@@ -15,18 +15,14 @@ public class FarmacoDAO extends GenericDAO {
             Farmaco farmaco = new Farmaco(resultSet.getInt("id"),
                     resultSet.getString("nomegenerico"),resultSet.getString("nomefarmaco"),
                     resultSet.getString("indicazioni"),resultSet.getString("ditta"),resultSet.getInt("quantita"));
-
-            String sqlCassetti = "SELECT scaffale,cassetto FROM cassetti WHERE id = ? ;";
-            PreparedStatement preparedStatementCassetti = connection.prepareStatement(sql);
-            preparedStatementCassetti.setInt(1,farmaco.getId());
-            ResultSet resultSetCassetti = preparedStatement.executeQuery();
-            farmaco.setCassetto(resultSetCassetti.getInt("cassetto"));
+            int cassetto = resultSet.getInt("cassetto");
+            String sqlCassetti = "SELECT scaffale,cassetto FROM cassetti WHERE id = "+cassetto+";";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet resultSetCassetti = ps.executeQuery();
             farmaco.setScaffale(resultSetCassetti.getInt("scaffale"));
+            farmaco.setCassetto(resultSetCassetti.getInt("cassetto"));
             farmaci.add(farmaco);
         }
         return farmaci;
     }
-
-
-
 }

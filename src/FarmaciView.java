@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class FarmaciView extends JFrame implements ActionListener {
@@ -22,9 +23,9 @@ public class FarmaciView extends JFrame implements ActionListener {
 
     ArrayList<Farmaco> farmaci = null;
 
-    public FarmaciView(ArrayList<Farmaco> farmaci) {
+    public FarmaciView() throws SQLException {
 
-        this.farmaci = farmaci;
+        this.farmaci = casting(FarmacoDAO.readAll());
 
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -34,6 +35,14 @@ public class FarmaciView extends JFrame implements ActionListener {
 
         setVisible(true);
 
+    }
+
+    private ArrayList<Farmaco> casting(ArrayList<Object> objects) {
+        ArrayList<Farmaco> farmacos = new ArrayList<>();
+        for (Object object : objects){
+            farmacos.add((Farmaco) object);
+        }
+        return farmacos;
     }
 
     private void initUI() {
@@ -123,6 +132,10 @@ public class FarmaciView extends JFrame implements ActionListener {
     public static void main(String[] args) {
         ArrayList<Farmaco> farmacos = new ArrayList<>();
         farmacos.add(new Farmaco(0,"acido acetilsalicilico","aspirina","cefalea","Bayer",567,10,1));
-        FarmaciView fw = new FarmaciView(farmacos);
+        try {
+            FarmaciView fw = new FarmaciView();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

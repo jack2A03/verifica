@@ -14,6 +14,15 @@ public class Farmaco {
     public Farmaco() {
     }
 
+    public Farmaco(int id, String nomeGenerico, String nomeFarmaco, String indicazioni, String ditta, int quantita) {
+        this.id = id;
+        this.nomeGenerico = nomeGenerico;
+        this.nomeFarmaco = nomeFarmaco;
+        this.indicazioni = indicazioni;
+        this.ditta = ditta;
+        this.quantita = quantita;
+    }
+
     public Farmaco(int id, String nomeGenerico, String nomeFarmaco, String indicazioni, String ditta, int quantita, int scaffale, int cassetto) {
         this.id = id;
         this.nomeGenerico = nomeGenerico;

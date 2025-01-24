@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class FarmaciView extends JFrame implements ActionListener {
 
+    private ArrayList<Farmaco> farmaciRicercati = new ArrayList<>();
+
     private JTextField txtNomeGenerico = null;
     private JTextField txtIndicazione = null;
 
@@ -23,9 +25,14 @@ public class FarmaciView extends JFrame implements ActionListener {
 
     ArrayList<Farmaco> farmaci = null;
 
+    private JButton btnAggiungi = null;
+    private JButton btnElimina = null;
+    private JButton btnDettaglio = null;
+
     public FarmaciView() throws SQLException {
 
         this.farmaci = casting(FarmacoDAO.readAll());
+        this.farmaciRicercati = farmaci;
 
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -74,13 +81,31 @@ public class FarmaciView extends JFrame implements ActionListener {
         add(pnl,BorderLayout.NORTH);
 
         JScrollPane scrollPane = new JScrollPane(tblFarmaci);
-        populate(farmaci);
+        populate();
         add(scrollPane,BorderLayout.CENTER);
+
+        JPanel pnlBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnAggiungi = new JButton("Aggiungi");
+        btnAggiungi.addActionListener(this);
+        btnElimina = new JButton("Elimina");
+        btnElimina.addActionListener(this);
+        btnDettaglio = new JButton("Dettaglio");
+        btnDettaglio.addActionListener(this);
+        pnlBtn.add(btnDettaglio);
+        pnlBtn.add(btnAggiungi);
+        pnlBtn.add(btnElimina);
+
+        add(pnlBtn,BorderLayout.SOUTH);
 
 
     }
 
-    private void populate(ArrayList<Farmaco> farmaciRicercati) {
+    private void populate() {
+        try {
+            farmaci =casting(FarmacoDAO.readAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         DefaultTableModel model = new DefaultTableModel();
 
@@ -89,7 +114,7 @@ public class FarmaciView extends JFrame implements ActionListener {
             model.addColumn(col);
         }
 
-        for (Farmaco farmaco : farmaciRicercati){
+        for (Farmaco farmaco : farmaci){
             model.addRow(farmaco.toRow());
         }
 
@@ -106,23 +131,40 @@ public class FarmaciView extends JFrame implements ActionListener {
         } else if (e.getSource() == btnClear) {
             txtNomeGenerico.setText("");
             txtIndicazione.setText("");
-            populate(new ArrayList<>());
+            populate();
+        } else if (e.getSource() == btnDettaglio){
+            dettaglio();
+            populate();
+        } else if (e.getSource() == btnElimina) {
+
         }
 
     }
 
+    private void dettaglio() {
+
+        int row = tblFarmaci.getSelectedRow();
+        int idFarmaco = Integer.parseInt(tblFarmaci.getValueAt(row,0)+"");
+
+        try {
+            FarmacoView fw = new FarmacoView((Farmaco) FarmacoDAO.readById(idFarmaco));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void ricerca() {
-        ArrayList<Farmaco> farmaciRicerca = new ArrayList<>();
+        farmaciRicercati = new ArrayList<>();
         for (Farmaco farmaco : farmaci){
             if (txtIndicazione.getText().isEmpty() && farmaco.getNomeFarmaco().toLowerCase().contains(txtNomeGenerico.getText().toLowerCase())){
-                    farmaciRicerca.add(farmaco);
+                    farmaciRicercati.add(farmaco);
             } else if (txtNomeGenerico.getText().isEmpty() && farmaco.getIndicazioni().toLowerCase().contains(txtIndicazione.getText().toLowerCase())) {
-                    farmaciRicerca.add(farmaco);
+                    farmaciRicercati.add(farmaco);
             } else if (farmaco.getNomeGenerico().toLowerCase().contains(txtNomeGenerico.getText().toLowerCase()) && farmaco.getIndicazioni().toLowerCase().contains(txtIndicazione.getText().toLowerCase())){
-                farmaciRicerca.add(farmaco);
+                farmaciRicercati.add(farmaco);
             }
         }
-        populate(farmaciRicerca);
+        populate();
     }
 
     public static void main(String[] args) {

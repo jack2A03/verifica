@@ -31,7 +31,7 @@ public class FarmacoView extends JFrame{
     }
 
     public void initUi(){
-        JPanel pnl = new JPanel(new GridLayout(7,1));
+        JPanel pnl = new JPanel(new GridLayout(8,1));
         pnl.add(lblId);
         JPanel pnlNomeGenerico = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pnlNomeGenerico.add(new JLabel("Nome generico: "));
@@ -59,18 +59,28 @@ public class FarmacoView extends JFrame{
         pnl.add(pnlDitta);
         pnl.add(pnlQuantita);
         pnl.add(pnlScaffale);
+        JPanel pnlButton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnSalva = new JButton("Salva");
         btnSalva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    farmaco.setNomeGenerico(txtNomeGenerico.getText());
+                    farmaco.setNomeFarmaco(txtNomeFarmaco.getText());
+                    farmaco.setIndicazioni(txtIndicazioni.getText());
+                    farmaco.setDitta(txtDitta.getText());
+                    farmaco.setQuantita(Integer.parseInt(txtQuantita.getText()));
+                    farmaco.setScaffale(Integer.parseInt(txtScaffale.getText()));
+                    farmaco.setCassetto(Integer.parseInt(txtCassetto.getText()));
                     FarmacoDAO.update(farmaco);
+                    dispose();
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
-        pnl.add(btnSalva);
+        pnlButton.add(btnSalva);
+        pnl.add(pnlButton);
         add(pnl);
 
     }
@@ -85,10 +95,4 @@ public class FarmacoView extends JFrame{
         txtScaffale.setText(farmaco.getScaffale()+"");
         txtCassetto.setText(farmaco.getCassetto()+"");
     }
-
-
-    public static void main(String[] args) {
-        FarmacoView fw = new FarmacoView(new Farmaco(0,"palle","nullo","morte","combe&co",60,10,20));
-    }
-
 }

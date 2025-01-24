@@ -25,4 +25,20 @@ public class FarmacoDAO extends GenericDAO {
         }
         return farmaci;
     }
+
+    public static boolean update(Object object) throws SQLException {
+
+        GenericDAO.connect();
+
+        Farmaco farmaco = (Farmaco) object;
+
+        String sql = "UPDATE farmaco, cassetti SET nomegenerico=?, nomefarmaco=?, indicazioni=?, ditta=?, quantita=?, cassetti.scaffale=?, cassetti.cassetto=? WHERE farmaco.id=? AND cassetto.id=farmaco.cassetto;";
+
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        ps.setString(1,farmaco.getNomeGenerico());
+        ps.setString(2,farmaco.getNomeFarmaco());
+        ps.setString(3,farmaco.getIndicazioni());
+        return true;
+    }
 }

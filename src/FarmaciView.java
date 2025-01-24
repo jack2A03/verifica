@@ -106,7 +106,7 @@ public class FarmaciView extends JFrame implements ActionListener {
         } else if (e.getSource() == btnClear) {
             txtNomeGenerico.setText("");
             txtIndicazione.setText("");
-            populate(farmaci);
+            populate(new ArrayList<>());
         }
 
     }
@@ -114,15 +114,11 @@ public class FarmaciView extends JFrame implements ActionListener {
     private void ricerca() {
         ArrayList<Farmaco> farmaciRicerca = new ArrayList<>();
         for (Farmaco farmaco : farmaci){
-            if (txtIndicazione.getText().equals("")){
-                if(txtNomeGenerico.getText().equals(farmaco.getNomeFarmaco())){
+            if (txtIndicazione.getText().isEmpty() && farmaco.getNomeFarmaco().toLowerCase().contains(txtNomeGenerico.getText().toLowerCase())){
                     farmaciRicerca.add(farmaco);
-                }
-            } else if (txtNomeGenerico.getText().equals("")) {
-                if(farmaco.getIndicazioni().contains(txtIndicazione.getText())){
+            } else if (txtNomeGenerico.getText().isEmpty() && farmaco.getIndicazioni().toLowerCase().contains(txtIndicazione.getText().toLowerCase())) {
                     farmaciRicerca.add(farmaco);
-                }
-            } else if (farmaco.getNomeGenerico().equals(txtNomeGenerico.getText()) && farmaco.getIndicazioni().contains(txtIndicazione.getText())){
+            } else if (farmaco.getNomeGenerico().toLowerCase().contains(txtNomeGenerico.getText().toLowerCase()) && farmaco.getIndicazioni().toLowerCase().contains(txtIndicazione.getText().toLowerCase())){
                 farmaciRicerca.add(farmaco);
             }
         }
